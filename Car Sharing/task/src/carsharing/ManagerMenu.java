@@ -22,9 +22,7 @@ public class ManagerMenu {
                 int input = scanner.nextInt();
                 scanner.nextLine();
                 switch (input) {
-                    case 1 -> {
-                        printCompanyList(dataSource.queryCompanyList());
-                    }
+                    case 1 -> printCompanyList(dataSource.queryCompanyList());
                     case 2 -> {
                         System.out.println("Enter the company name:");
                         String name = scanner.nextLine();
@@ -33,6 +31,7 @@ public class ManagerMenu {
                     case 0 -> {
                         return;
                     }
+                    default -> System.out.println("Wrong input!");
 
                 }
             } catch (Exception e) {
@@ -42,7 +41,7 @@ public class ManagerMenu {
     }
 
     private void printCompanyList(List<Company> companies) {
-        if (companies.size() > 0) {
+        if (!companies.isEmpty()) {
             System.out.println("Choose a company: ");
             for (Company company : companies) {
                 System.out.println(company.getId() + ". " + company.getName());
@@ -79,9 +78,8 @@ public class ManagerMenu {
                 scanner.nextLine();
 
                 switch (input) {
-                    case 1 -> {
-                        printCars(dataSource.queryCarList(company.getId()));
-                    }
+                    case 1 -> printCars(dataSource.queryCarList(company.getId()));
+
                     case 2 -> {
                         System.out.println("Enter the car name:");
                         String name = scanner.nextLine();
@@ -90,6 +88,7 @@ public class ManagerMenu {
                     case 0 -> {
                         return;
                     }
+                    default -> System.out.println("Wrong input!");
 
                 }
             } catch (Exception e) {
@@ -100,7 +99,7 @@ public class ManagerMenu {
     }
 
     private void printCars(List<Car> cars) {
-        if (cars.size() > 0) {
+        if (!cars.isEmpty()) {
             System.out.println("Car list: ");
 
             for (Car car : cars) {

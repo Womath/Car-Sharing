@@ -2,12 +2,19 @@ package carsharing;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class DataSource {
     public static final String DB_NAME = "carsharing";
     public static final String CONNECTION_STRING = "jdbc:h2:./src/carsharing/db/" + DB_NAME;
 
+    //Some frequently used printable sentences
+    public static final String TABLE_IS_CREATED = "Table is created.";
+    public static final String COULDNT_CREATE_TABLE = "Couldn't create table: ";
+    public static final String COULDNT_SHOW_QUERY = "Couldn't show query: ";
+
+    //Table and column names
     public static final String TABLE_COMPANY = "COMPANY";
     public static final String COMPANY_ID = "ID";
     public static final String COMPANY_NAME = "NAME";
@@ -22,42 +29,54 @@ public class DataSource {
     public static final String CUSTOMER_NAME = "NAME";
     public static final String CUSTOMER_RENTED_CAR_ID = "RENTED_CAR_ID";
 
-    public static final String QUERY_ALL_COMPANY = "SELECT * FROM " + TABLE_COMPANY +
-            " ORDER BY " + COMPANY_ID + " ASC";
-    public static final String QUERY_ALL_CAR_BY_COMPANY_ID = "SELECT * FROM " + TABLE_CAR +
-            " WHERE " + TABLE_CAR + "." + CAR_COMPANY_ID + " = ?" +
-            " ORDER BY " + CAR_ID + " ASC";
-    public static final String ADD_COMPANY = "INSERT INTO " + TABLE_COMPANY + "(" + COMPANY_NAME + ") VALUES(?)";
-    public static final String QUERY_COMPANY_BY_NAME = "SELECT " + COMPANY_NAME + " FROM " + TABLE_COMPANY +
-            " WHERE " + COMPANY_NAME + " = ?";
-    public static final String ADD_CAR = "INSERT INTO " + TABLE_CAR +
+    //commonly used SQL keywords with spaces
+    public static final String SELECT_ALL_FROM = "SELECT * FROM ";
+    public static final String ORDER_BY = " ORDER BY ";
+    public static final String WHERE = " WHERE ";
+    public static final String INSERT_INTO = "INSERT INTO ";
+    public static final String SELECT = "SELECT ";
+    public static final String FROM = " FROM ";
+    public static final String CREATE_TABLE_IF_NOT_EXISTS = "CREATE TABLE IF NOT EXISTS ";
+    public static final String INTEGER_PRIMARY_KEY_AUTO_INCREMENT = " INTEGER PRIMARY KEY AUTO_INCREMENT, ";
+
+    //SQL statements
+    public static final String QUERY_ALL_COMPANY = SELECT_ALL_FROM + TABLE_COMPANY +
+            ORDER_BY + COMPANY_ID + " ASC";
+    public static final String QUERY_ALL_CAR_BY_COMPANY_ID = SELECT_ALL_FROM + TABLE_CAR +
+            WHERE + TABLE_CAR + "." + CAR_COMPANY_ID + " = ?" +
+            ORDER_BY + CAR_ID + " ASC";
+    public static final String ADD_COMPANY = INSERT_INTO + TABLE_COMPANY + "(" + COMPANY_NAME + ") VALUES(?)";
+    public static final String QUERY_COMPANY_BY_NAME = SELECT + COMPANY_NAME + FROM + TABLE_COMPANY +
+            WHERE + COMPANY_NAME + " = ?";
+    public static final String ADD_CAR = INSERT_INTO + TABLE_CAR +
             "(" + CAR_NAME + ", " + CAR_COMPANY_ID + ", " + CAR_ORDER_IN_COMPANY + ") VALUES(?, ?, ?)";
-    public static final String QUERY_CAR_BY_NAME = "SELECT " + CAR_NAME + " FROM " + TABLE_CAR +
-            " WHERE " + CAR_NAME + " = ?";
-    public static final String QUERY_CUSTOMER = "SELECT " + CUSTOMER_NAME + " FROM " + TABLE_CUSTOMER +
-            " WHERE " + CUSTOMER_NAME + " = ?";
-    public static final String ADD_CUSTOMER = "INSERT INTO " + TABLE_CUSTOMER +
+    public static final String QUERY_CAR_BY_NAME = SELECT + CAR_NAME + FROM + TABLE_CAR +
+            WHERE + CAR_NAME + " = ?";
+    public static final String QUERY_CUSTOMER = SELECT + CUSTOMER_NAME + FROM + TABLE_CUSTOMER +
+            WHERE + CUSTOMER_NAME + " = ?";
+    public static final String ADD_CUSTOMER = INSERT_INTO + TABLE_CUSTOMER +
             "(" + CUSTOMER_NAME + ", " + CUSTOMER_RENTED_CAR_ID + ") VALUES(?, NULL)";
-    public static final String QUERY_ALL_CUSTOMER = "SELECT * FROM " + TABLE_CUSTOMER +
-            " ORDER BY " + CUSTOMER_ID + " ASC";
+    public static final String QUERY_ALL_CUSTOMER = SELECT_ALL_FROM + TABLE_CUSTOMER +
+            ORDER_BY + CUSTOMER_ID + " ASC";
     public static final String UPDATE_CUSTOMER_WITH_CAR_ID = "UPDATE " + TABLE_CUSTOMER + " SET " + CUSTOMER_RENTED_CAR_ID +
-            " = ?" + " WHERE " + CUSTOMER_ID + " = ?";
-    public static final String QUERY_CAR_BY_ID = "SELECT * FROM " + TABLE_CAR +
-            " WHERE " + TABLE_CAR + "." + CAR_ID + " = ?";
-    public static final String QUERY_COMPANY_BY_ID = "SELECT * FROM " + TABLE_COMPANY +
-            " WHERE " + TABLE_COMPANY + "." + COMPANY_ID + " = ?";
-    public static final String QUERY_CUSTOMER_BY_ID = "SELECT * FROM " + TABLE_CUSTOMER +
-            " WHERE " + TABLE_CUSTOMER + "." + CUSTOMER_ID + " = ?";
-    public static final String QUERY_AVAILABLE_CAR_BY_COMPANY_ID = "SELECT * FROM " + TABLE_CAR +
-            " WHERE " + TABLE_CAR + "." + CAR_COMPANY_ID + " = ?" +
+            " = ?" + WHERE + CUSTOMER_ID + " = ?";
+    public static final String QUERY_CAR_BY_ID = SELECT_ALL_FROM + TABLE_CAR +
+            WHERE + TABLE_CAR + "." + CAR_ID + " = ?";
+    public static final String QUERY_COMPANY_BY_ID = SELECT_ALL_FROM + TABLE_COMPANY +
+            WHERE + TABLE_COMPANY + "." + COMPANY_ID + " = ?";
+    public static final String QUERY_CUSTOMER_BY_ID = SELECT_ALL_FROM + TABLE_CUSTOMER +
+            WHERE + TABLE_CUSTOMER + "." + CUSTOMER_ID + " = ?";
+    public static final String QUERY_AVAILABLE_CAR_BY_COMPANY_ID = SELECT_ALL_FROM + TABLE_CAR +
+            WHERE + TABLE_CAR + "." + CAR_COMPANY_ID + " = ?" +
             " AND " + TABLE_CAR + "." + CAR_AVAILABLE + " = TRUE" +
-            " ORDER BY " + CAR_ID + " ASC";
+            ORDER_BY + CAR_ID + " ASC";
     public static final String UPDATE_CAR_AVAILABLE = "UPDATE " + TABLE_CAR + " SET " + CAR_AVAILABLE +
-            " = ?" + " WHERE " + CAR_ID + " = ?";
+            " = ?" + WHERE + CAR_ID + " = ?";
 
-
+    //connection
     private Connection conn;
 
+    //prepared statements
     private PreparedStatement companyQuery;
     private PreparedStatement companyAdder;
     private PreparedStatement carQuery;
@@ -74,11 +93,11 @@ public class DataSource {
 
 
     public DataSource () {
+        //it does nothing except creating an object, open method does the work
     }
 
     public boolean open() {
         try {
-            Class.forName ("org.h2.Driver");
             this.conn = DriverManager.getConnection(CONNECTION_STRING);
             conn.setAutoCommit(true);
             createCompanyTable();
@@ -100,9 +119,6 @@ public class DataSource {
             return true;
         } catch (SQLException e) {
             System.out.println("Couldn't connect to database: " + e.getMessage());
-            return false;
-        } catch (ClassNotFoundException e) {
-            System.out.println(e.getMessage());
             return false;
         }
     }
@@ -161,16 +177,16 @@ public class DataSource {
     public boolean createCompanyTable() {
         try (Statement statement = conn.createStatement()) {
             System.out.println("Crating COMPANY table...");
-            String sql = "CREATE TABLE IF NOT EXISTS " + TABLE_COMPANY +
-                    " (" + COMPANY_ID + " INTEGER PRIMARY KEY AUTO_INCREMENT, " +
+            String sql = CREATE_TABLE_IF_NOT_EXISTS + TABLE_COMPANY +
+                    " (" + COMPANY_ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
                     COMPANY_NAME + " VARCHAR UNIQUE NOT NULL)";
             statement.execute(sql);
             sql = " ALTER TABLE company ALTER COLUMN id RESTART WITH 1";
             statement.execute(sql);
-            System.out.println("Table is created.");
+            System.out.println(TABLE_IS_CREATED);
             return true;
         } catch (SQLException e) {
-            System.out.println("Couldn't create table: " + e.getMessage());
+            System.out.println(COULDNT_CREATE_TABLE + e.getMessage());
             return false;
         }
     }
@@ -178,8 +194,8 @@ public class DataSource {
     public boolean createCarTable() {
         try (Statement statement = conn.createStatement()) {
             System.out.println("Crating CAR table...");
-            String sql = "CREATE TABLE IF NOT EXISTS " + TABLE_CAR +
-                    " (" + CAR_ID + " INTEGER PRIMARY KEY AUTO_INCREMENT, " +
+            String sql = CREATE_TABLE_IF_NOT_EXISTS + TABLE_CAR +
+                    " (" + CAR_ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
                     CAR_NAME + " VARCHAR UNIQUE NOT NULL, " +
                     CAR_COMPANY_ID + " INT NOT NULL, " +
                     CAR_ORDER_IN_COMPANY + " INT NOT NULL, " +
@@ -187,10 +203,10 @@ public class DataSource {
                     "CONSTRAINT FK_COMPANY FOREIGN KEY (" + CAR_COMPANY_ID + ") " +
                     "REFERENCES " + TABLE_COMPANY + "(" + COMPANY_ID + "))";
             statement.execute(sql);
-            System.out.println("Table is created.");
+            System.out.println(TABLE_IS_CREATED);
             return true;
         } catch (SQLException e) {
-            System.out.println("Couldn't create table: " + e.getMessage());
+            System.out.println(COULDNT_CREATE_TABLE + e.getMessage());
             return false;
         }
     }
@@ -198,18 +214,18 @@ public class DataSource {
     public boolean createCustomerTable() {
         try (Statement statement = conn.createStatement()) {
             System.out.println("Creating CUSTOMER table...");
-            String sql = "CREATE TABLE IF NOT EXISTS " + TABLE_CUSTOMER +
-                    " (" + CUSTOMER_ID + " INTEGER PRIMARY KEY AUTO_INCREMENT, " +
+            String sql = CREATE_TABLE_IF_NOT_EXISTS + TABLE_CUSTOMER +
+                    " (" + CUSTOMER_ID + INTEGER_PRIMARY_KEY_AUTO_INCREMENT +
                     CUSTOMER_NAME + " VARCHAR NOT NULL, " +
                     CUSTOMER_RENTED_CAR_ID + " INT, " +
                     "UNIQUE (" + CUSTOMER_NAME + "), " +
                     "CONSTRAINT FK_CAR FOREIGN KEY (" + CUSTOMER_RENTED_CAR_ID + ") " +
                     "REFERENCES " + TABLE_CAR + "(" + CAR_ID + "))";
             statement.execute(sql);
-            System.out.println("Table is created.");
+            System.out.println(TABLE_IS_CREATED);
             return true;
         } catch (SQLException e) {
-            System.out.println("Couldn't create table: " + e.getMessage());
+            System.out.println(COULDNT_CREATE_TABLE + e.getMessage());
             return false;
         }
     }
@@ -228,8 +244,8 @@ public class DataSource {
 
             return companies;
         } catch (SQLException e) {
-            System.out.println("Couldn't show query: " + e.getMessage());
-            return null;
+            System.out.println(COULDNT_SHOW_QUERY + e.getMessage());
+            return Collections.emptyList();
         }
     }
 
@@ -249,8 +265,8 @@ public class DataSource {
             }
             return cars;
         } catch (SQLException e) {
-            System.out.println("Couldn't show query: " + e.getMessage());
-            return null;
+            System.out.println(COULDNT_SHOW_QUERY + e.getMessage());
+            return Collections.emptyList();
         }
     }
 
@@ -337,8 +353,8 @@ public class DataSource {
 
             return customers;
         } catch (SQLException e) {
-            System.out.println("Couldn't show query: " + e.getMessage());
-            return null;
+            System.out.println(COULDNT_SHOW_QUERY + e.getMessage());
+            return Collections.emptyList();
         }
     }
 
@@ -411,8 +427,8 @@ public class DataSource {
             }
             return cars;
         } catch (SQLException e) {
-            System.out.println("Couldn't show query: " + e.getMessage());
-            return null;
+            System.out.println(COULDNT_SHOW_QUERY + e.getMessage());
+            return Collections.emptyList();
         }
     }
 

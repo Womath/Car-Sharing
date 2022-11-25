@@ -9,10 +9,9 @@ public class Menu {
     public Menu(DataSource dataSource) {
         this.dataSource = dataSource;
         dataSource.open();
-        loginMenu();
     }
 
-    private void loginMenu() {
+    public void loginMenu() {
 
         while (true) {
             System.out.println("""
@@ -38,6 +37,7 @@ public class Menu {
                         dataSource.close();
                         System.exit(0);
                     }
+                    default -> System.out.println("Wrong input!");
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());

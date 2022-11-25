@@ -7,6 +7,7 @@ import java.util.Scanner;
 public class CustomerMenu {
     Scanner scanner = new Scanner(System.in);
     DataSource dataSource;
+    public static final String BACK = "0. Back";
 
     public CustomerMenu(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -14,12 +15,12 @@ public class CustomerMenu {
     }
 
     private void printCustomerList(List<Customer> customers) {
-        if (customers.size() > 0) {
+        if (!customers.isEmpty()) {
             System.out.println("Choose a customer: ");
             for (Customer customer : customers) {
                 System.out.println(customer.getId() + ". " + customer.getName());
             }
-            System.out.println("0. Back");
+            System.out.println(BACK);
             System.out.println();
 
             try {
@@ -52,9 +53,7 @@ public class CustomerMenu {
                 scanner.nextLine();
 
                 switch (input) {
-                    case 1 -> {
-                        rentACar(customer);
-                    }
+                    case 1 -> rentACar(customer);
                     case 2 -> {
                         if (customer.getRented_car_id() == null) {
                             System.out.println("You didn't rent a car!");
@@ -80,6 +79,7 @@ public class CustomerMenu {
                     case 0 -> {
                         return;
                     }
+                    default -> System.out.println("Wrong input!");
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -110,12 +110,12 @@ public class CustomerMenu {
     }
 
     private Company getCompanyFromList(List<Company> companies) {
-        if (companies.size() > 0) {
+        if (!companies.isEmpty()) {
             System.out.println("Choose a company: ");
             for (Company company : companies) {
                 System.out.println(company.getId() + ". " + company.getName());
             }
-            System.out.println("0. Back");
+            System.out.println(BACK);
             System.out.println();
             try {
                 int i = scanner.nextInt();
@@ -137,13 +137,13 @@ public class CustomerMenu {
     }
 
     private Car getCarFromList(List<Car> cars) {
-            if (cars.size() > 0) {
+            if (!cars.isEmpty()) {
                 System.out.println("Choose a car: ");
 
                 for (Car car : cars) {
                     System.out.println((cars.indexOf(car) + 1) + ". " + car.getName());
                 }
-                System.out.println("0. Back");
+                System.out.println(BACK);
                 try {
                     int i = scanner.nextInt();
                     scanner.nextLine();
