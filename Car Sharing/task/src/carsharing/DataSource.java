@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Class for database handling
+ */
 public class DataSource {
     public static final String DB_NAME = "carsharing";
     public static final String CONNECTION_STRING = "jdbc:h2:./src/carsharing/db/" + DB_NAME;
@@ -96,6 +99,12 @@ public class DataSource {
         //it does nothing except creating an object, open method does the work
     }
 
+    /**
+     * Opens connection to database, creates tables (if not exists)
+     * and initializes prepared statements.
+     * @return true/false depends on successfully running open method
+     *         can be used later for logging purposes
+     */
     public boolean open() {
         try {
             this.conn = DriverManager.getConnection(CONNECTION_STRING);
@@ -123,6 +132,11 @@ public class DataSource {
         }
     }
 
+    /**
+     * Closes all the prepared statements and connections
+     * @return true/false depends on successfully running close method
+     *         can be used later for logging purposes
+     */
     public boolean close() {
         try {
             if (carAvailableUpdater != null) {
@@ -174,6 +188,10 @@ public class DataSource {
         }
     }
 
+    /**
+     * Creates table named COMPANY if not exists
+     * @return true/false, depends on successfully executing SQL
+     */
     public boolean createCompanyTable() {
         try (Statement statement = conn.createStatement()) {
             System.out.println("Crating COMPANY table...");
@@ -191,6 +209,10 @@ public class DataSource {
         }
     }
 
+    /**
+     * Creates table named CAR if not exists
+     * @return true/false, depends on successfully executing SQL
+     */
     public boolean createCarTable() {
         try (Statement statement = conn.createStatement()) {
             System.out.println("Crating CAR table...");
@@ -211,6 +233,10 @@ public class DataSource {
         }
     }
 
+    /**
+     * Creates table named CUSTOMER if not exists
+     * @return true/false, depends on successfully executing SQL
+     */
     public boolean createCustomerTable() {
         try (Statement statement = conn.createStatement()) {
             System.out.println("Creating CUSTOMER table...");
@@ -230,6 +256,10 @@ public class DataSource {
         }
     }
 
+    /**
+     * Query all data from COMPANY table
+     * @return list of Company objects
+     */
     public List<Company> queryCompanyList() {
         try (Statement statement = conn.createStatement();
              ResultSet results = statement.executeQuery(QUERY_ALL_COMPANY)) {
@@ -249,6 +279,11 @@ public class DataSource {
         }
     }
 
+    /**
+     * Query all data from CAR table by company ID
+     * @param i company ID
+     * @return list of Car objects
+     */
     public List<Car> queryCarList(int i) {
         try {
             carByCompanyIdQuery.setInt(1, i);
@@ -270,6 +305,12 @@ public class DataSource {
         }
     }
 
+    /**
+     * adds new data to COMPANY table
+     * @param name name of the Company
+     * @return company ID for logging purposes later
+     * @throws SQLException if adding was not successful
+     */
     public int addCompany(String name) throws SQLException {
         companyQuery.setString(1, name);
         ResultSet results = companyQuery.executeQuery();
@@ -292,6 +333,14 @@ public class DataSource {
         }
     }
 
+    /**
+     * adds new row to CAR table
+     * @param name name of the car
+     * @param company_id ID of the company where car belongs
+     * @param orderInCompany not used anymore, it has to be deleted
+     * @return car ID for logging purposes
+     * @throws SQLException if adding was not successful
+     */
     public int addCar(String name, int company_id, int orderInCompany) throws SQLException {
         carQuery.setString(1, name);
         ResultSet results = carQuery.executeQuery();
@@ -316,6 +365,12 @@ public class DataSource {
         }
     }
 
+    /**
+     * adds new row to CUSTOMER table
+     * @param name name of the customer
+     * @return customer ID for logging purposes
+     * @throws SQLException if adding was not successful
+     */
     public int addCustomer(String name) throws SQLException {
         customerQuery.setString(1, name);
         ResultSet results = customerQuery.executeQuery();
@@ -338,6 +393,10 @@ public class DataSource {
         }
     }
 
+    /**
+     * Query all data from CUSTOMER table
+     * @return list of Customer objects
+     */
     public List<Customer> queryCustomerList() {
         try (Statement statement = conn.createStatement();
              ResultSet results = statement.executeQuery(QUERY_ALL_CUSTOMER)) {
@@ -358,6 +417,12 @@ public class DataSource {
         }
     }
 
+    /**
+     * Update customer's rented car ID with given value or null
+     * @param car_id ID of rented car
+     * @param customer_id ID of customer where changes are needed
+     * @throws SQLException if updating was not successful
+     */
     public void updateCustomerWithCarId(Integer car_id, int customer_id) throws SQLException {
         carIdInCustomerUpdater.setObject(1, car_id);
         carIdInCustomerUpdater.setInt(2, customer_id);
@@ -368,6 +433,12 @@ public class DataSource {
         }
     }
 
+    /**
+     * Query a company by its ID
+     * @param company_id ID of required company
+     * @return returns Company object
+     * @throws SQLException if query was not successful
+     */
     public Company queryCompanyById(int company_id) throws SQLException{
         companyByIdQuery.setInt(1, company_id);
         ResultSet results = companyByIdQuery.executeQuery();
@@ -381,6 +452,12 @@ public class DataSource {
         return company;
     }
 
+    /**
+     * Query a car by its ID
+     * @param car_id ID of required car
+     * @return return Car object
+     * @throws SQLException if query was not successful
+     */
     public Car queryCarById(int car_id) throws SQLException{
         carByIdQuery.setInt(1, car_id);
         ResultSet results = carByIdQuery.executeQuery();
@@ -397,6 +474,12 @@ public class DataSource {
         return car;
     }
 
+    /**
+     * Query a customer by its ID
+     * @param customer_id ID of required customer
+     * @return return Customer object
+     * @throws SQLException if query was not successful
+     */
     public Customer queryCustomerById(int customer_id) throws SQLException{
         customerByIdQuery.setInt(1, customer_id);
         ResultSet results = customerByIdQuery.executeQuery();
@@ -411,9 +494,14 @@ public class DataSource {
         return customer;
     }
 
-    public List<Car> queryAvailableCarList(int i) {
+    /**
+     * Query not rented cars from company
+     * @param company_id ID of company where cars belong
+     * @return list of Car objects
+     */
+    public List<Car> queryAvailableCarList(int company_id) {
         try {
-            availableCarByCompanyIdQuery.setInt(1, i);
+            availableCarByCompanyIdQuery.setInt(1, company_id);
             ResultSet results = availableCarByCompanyIdQuery.executeQuery();
             List<Car> cars = new ArrayList<>();
             while (results.next()) {
@@ -432,6 +520,12 @@ public class DataSource {
         }
     }
 
+    /**
+     * Update car's availability in table
+     * @param is_available true if available, false if rented
+     * @param car_id ID of required car
+     * @throws SQLException if update was not successful
+     */
     public void updateCarAvailable(boolean is_available, int car_id) throws SQLException {
         carAvailableUpdater.setBoolean(1, is_available);
         carAvailableUpdater.setInt(2, car_id);

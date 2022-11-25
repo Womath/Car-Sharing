@@ -3,15 +3,26 @@ package carsharing;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Menu and methods for managers for handling companies and their cars
+ */
 public class ManagerMenu {
     Scanner scanner = new Scanner(System.in);
     DataSource dataSource;
 
+    /**
+     * gets the same datasource from menu for handling database
+     * opens manager menu
+     * @param dataSource
+     */
     public ManagerMenu(DataSource dataSource) {
         this.dataSource = dataSource;
         managerMenu();
     }
 
+    /**
+     * Manager menu with three options to choose from
+     */
     private void managerMenu() {
         while (true) {
             System.out.println("""
@@ -40,6 +51,10 @@ public class ManagerMenu {
         }
     }
 
+    /**
+     * prints a list of companies and lets the user choose a company
+     * @param companies list of companies in database
+     */
     private void printCompanyList(List<Company> companies) {
         if (!companies.isEmpty()) {
             System.out.println("Choose a company: ");
@@ -65,6 +80,10 @@ public class ManagerMenu {
         }
     }
 
+    /**
+     * Menu for selected company with three options to choose from
+     * @param company chosen company
+     */
     private void carsOfCompanyMenu(Company company) {
         int counter = 0;
         while(true) {
@@ -98,6 +117,10 @@ public class ManagerMenu {
         }
     }
 
+    /**
+     * prints cars of the chosen company
+     * @param cars list of cars from database filtered by company ID
+     */
     private void printCars(List<Car> cars) {
         if (!cars.isEmpty()) {
             System.out.println("Car list: ");

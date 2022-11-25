@@ -2,15 +2,26 @@ package carsharing;
 
 import java.util.Scanner;
 
+/**
+ * Main menu of this Car renting program
+ */
 public class Menu {
     private final Scanner scanner = new Scanner(System.in);
     private final DataSource dataSource;
 
+    /**
+     * Constructor - initializes dataSource and opens it after
+     * @param dataSource holds connection to database and database statements
+     */
     public Menu(DataSource dataSource) {
         this.dataSource = dataSource;
         dataSource.open();
     }
 
+    /**
+     * Main menu of the program with four options to choose from
+     * Can jump into manager menu, customer menu or create a new customer
+     */
     public void loginMenu() {
 
         while (true) {

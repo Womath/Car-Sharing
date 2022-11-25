@@ -4,16 +4,28 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Menu for customers class
+ */
 public class CustomerMenu {
     Scanner scanner = new Scanner(System.in);
     DataSource dataSource;
     public static final String BACK = "0. Back";
 
+    /**
+     * creates menu object, initializes datasource to handle database and
+     * prints a list of customers
+     * @param dataSource
+     */
     public CustomerMenu(DataSource dataSource) {
         this.dataSource = dataSource;
         printCustomerList(dataSource.queryCustomerList());
     }
 
+    /**
+     * prints a list of customers and lets the user choose one from them
+     * @param customers
+     */
     private void printCustomerList(List<Customer> customers) {
         if (!customers.isEmpty()) {
             System.out.println("Choose a customer: ");
@@ -39,6 +51,13 @@ public class CustomerMenu {
         }
     }
 
+    /**
+     * menu for customers to handle car renting
+     * user can choose from four options: renting a car, returning a car, checking rented car
+     * or going back to main menu
+     * @param customer_id ID of chosen customer
+     * @throws SQLException if query would be unsuccessful
+     */
     private void customerMenu(int customer_id) throws SQLException {
         Customer customer = dataSource.queryCustomerById(customer_id);
         while (true) {
@@ -87,6 +106,12 @@ public class CustomerMenu {
         }
     }
 
+    /**
+     * Handling renting a car. Checks if customer has already rented a car, and if not
+     * rents a car by updating database with correct values
+     * @param customer chosen customer
+     * @throws SQLException if updating was unsuccessful
+     */
     private void rentACar(Customer customer) throws SQLException {
         if (customer.getRented_car_id() != null) {
             System.out.println("You've already rented a car!");
@@ -109,6 +134,11 @@ public class CustomerMenu {
         }
     }
 
+    /**
+     * prints a list of companies and lets the user choose from them
+     * @param companies list of companies from database
+     * @return returns chosen company
+     */
     private Company getCompanyFromList(List<Company> companies) {
         if (!companies.isEmpty()) {
             System.out.println("Choose a company: ");
@@ -136,6 +166,11 @@ public class CustomerMenu {
         }
     }
 
+    /**
+     * Lists available cars of the chosen company and lets the user choose from them
+     * @param cars list of available cars of a chosen company
+     * @return returns chosen car
+     */
     private Car getCarFromList(List<Car> cars) {
             if (!cars.isEmpty()) {
                 System.out.println("Choose a car: ");
